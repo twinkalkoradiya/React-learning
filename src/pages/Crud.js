@@ -3,6 +3,7 @@ import Select from 'react-select';
 import AppHeader from '../appHeader/appHeader';
 import AppFooter from '../appFooter/appFooter';
 import AppMenu from '../appMenu/appMenu';
+import axios from 'axios';
 
 export default function Crud() {
     const data = [
@@ -42,6 +43,42 @@ export default function Crud() {
         test: [],
         student_type: '',
     });
+    const handleChange = (e) => {
+        setFullData({ ...FullData, test: e.map((x) => x.value) });
+    };
+    const handlechange = (e) => {
+        //console.log(e);
+        let value = e.target.value;
+        let name = e.target.name;
+        var updatedList = [...FullData.languages];
+        if (e.target.checked && e.target.type === 'checkbox') {
+            updatedList = [...FullData.languages, value];
+        } else {
+            updatedList.splice(FullData.languages.indexOf(value), 1);
+        }
+        value = e.target.type === 'checkbox' ? updatedList : value;
+        //console.log(updatedList)
+        setFullData(updatedList);
+        //console.log(value);
+        setFullData({ ...FullData, [name]: value });
+    };
+    const handleSubmit =  (e) => {
+        e.preventDefault();
+        axios.post(
+            "http://localhost:4000/store-data",
+            FullData
+        )
+            .then(res => {
+                if (res.status === 200) {
+                    Promise.resolve();
+                    alert('Student successfully created')
+                }
+                else
+                    Promise.reject()
+            })
+            .catch(err => alert('Something went wrong'))
+            window.location.reload(); 
+    };
     return (
         <div>
             <AppHeader />
@@ -73,40 +110,45 @@ export default function Crud() {
                                         <h3 className="card-title">Quick Example</h3>
                                     </div>
 
-                                    <form>
+                                    <form onSubmit={handleSubmit} >
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label htmlFor="firstname">First Name</label>
-                                                <input type="text" className="form-control" name="firstname" value="" onChange="" placeholder='First Name' />
+                                                <input type="text" className="form-control" name="firstname" value={FullData.firstname}
+                                                    onChange={handlechange} placeholder='First Name' />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="lastname">Last Name</label>
-                                                <input type="text" className="form-control" name="lastname" value="" onChange="" placeholder='Last Name' />
+                                                <input type="text" className="form-control" name="lastname" value={FullData.lastname}
+                                                    onChange={handlechange} placeholder='Last Name' />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="email">Email</label>
-                                                <input type="text" className="form-control" name="email" value="" onChange="" placeholder='Email' />
+                                                <input type="text" className="form-control" name="email" value={FullData.email}
+                                                    onChange={handlechange} placeholder='Email' />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="phoneno">Phone no</label>
-                                                <input type="text" className="form-control" name="phoneno" value="" onChange="" placeholder='Phone no' />
+                                                <input type="text" className="form-control" name="phoneno" value={FullData.phoneno}
+                                                    onChange={handlechange} placeholder='Phone no' />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="address">Address</label>
-                                                <input type="text" className="form-control" name="address" value="" onChange="" placeholder='address' />
+                                                <input type="text" className="form-control" name="address" value={FullData.address}
+                                                    onChange={handlechange} placeholder='address' />
                                             </div>
                                             <div className="form-group">
                                                 <label>Select Gender</label>
                                                 <div className="form-check">
                                                     <input className="form-check-input" type="radio"
                                                         value="Male"
-                                                        name="gender" />
+                                                        name="gender" onChange={handlechange} />
                                                     <label htmlFor="gender" className="form-check-label">Male</label>
                                                 </div>
                                                 <div className="form-check">
                                                     <input className="form-check-input" type="radio"
                                                         value="feMale"
-                                                        name="gender" />
+                                                        name="gender" onChange={handlechange} />
                                                     <label htmlFor="gender" className="form-check-label">feMale</label>
                                                 </div>
                                             </div>
@@ -115,29 +157,29 @@ export default function Crud() {
                                                 <div className="form-check">
                                                     <input className="form-check-input" type="checkbox"
                                                         name="languages"
-                                                        value="Javascript" />
+                                                        value="Javascript" onChange={handlechange} />
                                                     <label className="form-check-label">Javascript</label>
                                                 </div>
                                                 <div className="form-check">
                                                     <input className="form-check-input" type="checkbox"
                                                         name="languages"
-                                                        value="Python" />
+                                                        value="Python" onChange={handlechange} />
                                                     <label className="form-check-label">Python</label>
                                                 </div>
                                                 <div className="form-check">
                                                     <input className="form-check-input" type="checkbox"
                                                         name="languages"
-                                                        value="Java" />
+                                                        value="Java" onChange={handlechange} />
                                                     <label className="form-check-label">Java</label>
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <label>Select type</label>
-                                                <select className="form-control">
-                                                    <option>--select type--</option>
-                                                    <option value="0">Student</option>
-                                                    <option value="1">Graduate</option>
-                                                    <option value="2">Un-graduate</option>
+                                                <select className="form-control" onChange={handlechange}>
+                                                    <option value="0">--select type--</option>
+                                                    <option value="1">Student</option>
+                                                    <option value="2">Graduate</option>
+                                                    <option value="3">Un-graduate</option>
                                                 </select>
                                             </div>
                                             <div className="form-group">
@@ -147,12 +189,11 @@ export default function Crud() {
                                                     placeholder="Select Option"
                                                     value={data.filter((obj) => FullData.test.includes(obj.value))} // set selected values
                                                     options={data} // set list of the data
-                                                    onChange="" // assign onChange function
+                                                    onChange={handleChange} // assign onChange function
                                                     isMulti
                                                     isClearable
                                                 />
                                             </div>
-
                                         </div>
                                         <div className="card-footer">
                                             <button type="submit" className="btn btn-primary">Submit</button>
