@@ -42,9 +42,16 @@ export default function Crud() {
         languages: [],
         test: [],
         student_type: '',
+        file:'',
+        filename:'',
     });
     const handleChange = (e) => {
-        setFullData({ ...FullData, test: e.map((x) => x.value) });
+        var multarray  = e.map((x) => x.value);
+        setFullData({ ...FullData, test: multarray.toString() });
+    };
+    const saveFile = (e) => {
+        setFullData({ ...FullData, file: e.target.files[0], filename: e.target.files[0].name });
+        //setFullData({ ...FullData, filename: e.target.files[0].name });
     };
     const handlechange = (e) => {
         //console.log(e);
@@ -56,13 +63,13 @@ export default function Crud() {
         } else {
             updatedList.splice(FullData.languages.indexOf(value), 1);
         }
-        value = e.target.type === 'checkbox' ? updatedList : value;
-        //console.log(updatedList)
-        setFullData(updatedList);
+        value = e.target.type === 'checkbox' ? updatedList.toString() : value;
+        setFullData(updatedList.toString());
         //console.log(value);
         setFullData({ ...FullData, [name]: value });
     };
-    const handleSubmit =  (e) => {
+    const handleSubmit = (e) => {
+        console.log(FullData);
         e.preventDefault();
         axios.post(
             "http://localhost:4000/store-data",
@@ -77,7 +84,7 @@ export default function Crud() {
                     Promise.reject()
             })
             .catch(err => alert('Something went wrong'))
-            window.location.reload(); 
+        //window.location.reload();
     };
     return (
         <div>
@@ -157,25 +164,25 @@ export default function Crud() {
                                                 <div className="form-check">
                                                     <input className="form-check-input" type="checkbox"
                                                         name="languages"
-                                                        value="Javascript" onChange={handlechange} />
+                                                        value={0} onChange={handlechange} />
                                                     <label className="form-check-label">Javascript</label>
                                                 </div>
                                                 <div className="form-check">
                                                     <input className="form-check-input" type="checkbox"
                                                         name="languages"
-                                                        value="Python" onChange={handlechange} />
+                                                        value={1} onChange={handlechange} />
                                                     <label className="form-check-label">Python</label>
                                                 </div>
                                                 <div className="form-check">
                                                     <input className="form-check-input" type="checkbox"
                                                         name="languages"
-                                                        value="Java" onChange={handlechange} />
+                                                        value={2} onChange={handlechange} />
                                                     <label className="form-check-label">Java</label>
                                                 </div>
                                             </div>
                                             <div className="form-group">
                                                 <label>Select type</label>
-                                                <select className="form-control" onChange={handlechange}>
+                                                <select className="form-control" onChange={handlechange} name="student_type">
                                                     <option value="0">--select type--</option>
                                                     <option value="1">Student</option>
                                                     <option value="2">Graduate</option>
@@ -193,6 +200,13 @@ export default function Crud() {
                                                     isMulti
                                                     isClearable
                                                 />
+                                            </div>
+                                            <div className="form-group">
+                                            <label>Image</label>
+                                                <div className="custom-file">
+                                                    <input type="file" name="image" className="custom-file-input" id="image" onChange={saveFile} />
+                                                    <label className="custom-file-label" htmlFor="customFile">Choose file</label>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="card-footer">

@@ -37,7 +37,7 @@ var storage = multer.diskStorage({
         callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
     }
 })
- 
+
 var upload = multer({
     storage: storage
 });
@@ -59,7 +59,7 @@ app.post("/upload", upload.single('file'), (req, res) => {
 
 //add new user
 app.post('/store-data',(req, res) => {
-    let data = {firstname: req.body.firstname, lastname:  req.body.lastname ,email:  req.body.email,phoneno:  req.body.phoneno,address:  req.body.address};
+    let data = {firstname: req.body.firstname, lastname:  req.body.lastname ,email:  req.body.email,phoneno:  req.body.phoneno,address:  req.body.address ,gender: req.body.gender ,student_type: req.body.student_type, languages: req.body.languages, test: req.body.test};
     let sql = "INSERT INTO users_file SET ?";
     let query = db.query(sql, data,(err, results) => {
         if(err) throw err;
