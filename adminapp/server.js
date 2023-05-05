@@ -58,8 +58,9 @@ app.post("/upload", upload.single('file'), (req, res) => {
 });
 
 //add new user
-app.post('/store-data',(req, res) => {
-    let data = {firstname: req.body.firstname, lastname:  req.body.lastname ,email:  req.body.email,phoneno:  req.body.phoneno,address:  req.body.address ,gender: req.body.gender ,student_type: req.body.student_type, languages: req.body.languages, test: req.body.test};
+app.post('/store-data',upload.single("file"),(req, res) => {
+    console.log("req body",req);
+    let data = {firstname: req.body.firstname, lastname:  req.body.lastname ,email:  req.body.email,phoneno:  req.body.phoneno,address:  req.body.address ,gender: req.body.gender ,student_type: req.body.student_type, languages: req.body.languages, test: req.body.test, image: req.body.filename};
     let sql = "INSERT INTO users_file SET ?";
     let query = db.query(sql, data,(err, results) => {
         if(err) throw err;

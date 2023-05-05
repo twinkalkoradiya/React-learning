@@ -69,11 +69,23 @@ export default function Crud() {
         setFullData({ ...FullData, [name]: value });
     };
     const handleSubmit = (e) => {
-        console.log(FullData);
+        //console.log(FullData);
         e.preventDefault();
+        const data = new FormData()
+        data.append("firstname",FullData.firstname);
+        data.append("lastname",FullData.lastname);
+        data.append("email",FullData.email);
+        data.append("phoneno",FullData.phoneno);
+        data.append("address",FullData.address);
+        data.append("gender",FullData.gender);
+        data.append("languages",FullData.languages);
+        data.append("test",FullData.test);
+        data.append("student_type",FullData.student_type);
+        data.append("file",FullData.file);
+        data.append("filename",FullData.filename);
         axios.post(
             "http://localhost:4000/store-data",
-            FullData
+            data
         )
             .then(res => {
                 if (res.status === 200) {
